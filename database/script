@@ -187,3 +187,180 @@ CREATE TABLE RFQ_DETAILS_SUPP (
   QUANTITY     NUMBER (20,2), 
   UNIT_PRICE   NUMBER (20,2), 
   SUPPLY_DATE  DATE ) ; 
+
+DROP TABLE ORDERS CASCADE CONSTRAINTS ; 
+
+CREATE TABLE ORDERS ( 
+  BRAN_NO               NUMBER (2), 
+  ORDER_NO              NUMBER (10)   NOT NULL, 
+  ORDER_DATE            DATE, 
+  SUPP_NO               NUMBER (2), 
+  STATUS                NUMBER (2), 
+  COMMENTS              VARCHAR2 (500), 
+  CUST_NO               NUMBER (3), 
+  PROJ_NO               NUMBER (3), 
+  CREATED_USER          NUMBER (8), 
+  CREATED_DATE          DATE, 
+  DEP_NO                NUMBER        NOT NULL, 
+  MANAGER_APPROVE       NUMBER (8), 
+  MANAGER_APPROVE_DATE  DATE, 
+  SECTION_APPROVE       NUMBER (8), 
+  SECTION_APPROVE_DATE  DATE, 
+  PUR_TYPE_NO           NUMBER, 
+  LOC_NO                NUMBER (5), 
+  TERM_NO               NUMBER (22,5), 
+  OPERATION_CHECK       NUMBER (8), 
+  OPERATION_CHECK_DATE  DATE, 
+  PRINT_COU             NUMBER (10)   DEFAULT 0, 
+  PROCURMENT_REM        VARCHAR2 (100), 
+  REV_ST                NUMBER (2), 
+  SCMANAGER_APPROVE     NUMBER (8), 
+  SCMANAGER_DATE        DATE, 
+  SNRMNG_APPROVE        NUMBER (8), 
+  SNRMNG_DATE           DATE, 
+  PRIORITY              NUMBER (2), 
+  MNG_REMARK            VARCHAR2 (200), 
+  SMNG_REMARK           VARCHAR2 (200), 
+  SCM_REMARK            VARCHAR2 (200), 
+  SEC_REMARK            VARCHAR2 (200), 
+  BY_DATE               DATE, 
+  MNG_RE_DATE           DATE, 
+  SMNG_RE_DATE          DATE, 
+  SCM_RE_DATE           DATE, 
+  SEC_RE_DATE           DATE, 
+  FSNR_APPROVE          NUMBER (8), 
+  FSNR_DATE             DATE, 
+  FSNR_REMARK           VARCHAR2 (200), 
+  FSR_RE_DATE           DATE, 
+  AUDIT_APPROVE         NUMBER (8), 
+  AUDIT_DATE            DATE, 
+  AUDIT_REMARK          VARCHAR2 (200), 
+  AUDIT_RE_DATE         DATE, 
+  PUR_TYPE              NUMBER, 
+  OLD_CREATED_USER      NUMBER, 
+  CANCEL_DATE           DATE, 
+  WAREHOUSE_COMMENTS    VARCHAR2 (200), 
+  PRIMARY KEY ( ORDER_NO ) ) ; 
+
+ALTER TABLE ORDERS ADD  CONSTRAINT ORDERS_R04
+ FOREIGN KEY (PROJ_NO) 
+  REFERENCES PETRO.PROJECT_CODE (PROJ_NO) ;
+
+
+
+COMMENT ON COLUMN ORDERS.PRIORITY IS '1 urgent ,2 normal';
+COMMENT ON COLUMN ORDERS.STATUS IS '1,''Pending '',2,''Canceled'',3,''Under manager approve'',';
+
+
+DROP TABLE ORDER_DETAILS CASCADE CONSTRAINTS ; 
+
+CREATE TABLE ORDER_DETAILS ( 
+  BRAN_NO           NUMBER (2), 
+  ORDER_NO          NUMBER (10)   NOT NULL, 
+  ORDER_DATE        DATE, 
+  GROUP_NO          NUMBER (10)   NOT NULL, 
+  ITEM_NO           NUMBER (38)   NOT NULL, 
+  QTY_ORDERED       NUMBER (20,2), 
+  QTY_CONFIRMED     NUMBER (20,2), 
+  DESCRIPTION       VARCHAR2 (1000), 
+  PART_NO           VARCHAR2 (50), 
+  COST_CENTER       NUMBER (10), 
+  BITEM_NO          NUMBER (5), 
+  REV_ST            NUMBER (2), 
+  ATT_FLAG          NUMBER (1)    DEFAULT 0, 
+  QTY_WH_CONFIRMED  NUMBER (20,2), 
+  STOCK_ITEM_NO     NUMBER, 
+  CONSTRAINT ORDER_DETAILS_PK
+  PRIMARY KEY ( ITEM_NO, ORDER_NO ) ) ; 
+
+ALTER TABLE ORDER_DETAILS ADD  CONSTRAINT ORDER_DTL_FK2
+ FOREIGN KEY (ORDER_NO) 
+  REFERENCES PETRO.ORDERS (ORDER_NO) ;
+
+
+
+COMMENT ON COLUMN ORDER_DETAILS.ATT_FLAG IS '0 no 1 yes';
+
+DROP TABLE PROCESS CASCADE CONSTRAINTS ; 
+
+CREATE TABLE PROCESS ( 
+  BRAN_NO               NUMBER (2), 
+  PRO_TYPE_SER          NUMBER (10), 
+  PRO_TYPE_NO           NUMBER (2), 
+  PRO_DATE              DATE, 
+  PUR_TYPE_SER          NUMBER (10)   NOT NULL, 
+  PUR_TYPE_NO           NUMBER (2), 
+  PUR_DATE              DATE, 
+  SUPP_NO               NUMBER (10), 
+  STATUS                NUMBER (2), 
+  TOTAL_PRICE           NUMBER (20,2), 
+  PRO_SUPPLT_DATE       DATE, 
+  END_DATE              DATE, 
+  COMMENTS              VARCHAR2 (500), 
+  CURR_NO               NUMBER (3), 
+  CURR_RATE             NUMBER (6,2), 
+  DEP_NO                NUMBER (4), 
+  CREATED_USER          NUMBER, 
+  CREATED_DATE          DATE, 
+  SECTION_APPROVE       NUMBER, 
+  SECTION_APPROVE_DATE  DATE, 
+  MANAGER_APPROVE       NUMBER, 
+  MANAGER_APPROVE_DATE  DATE, 
+  GM_APPROVE            NUMBER (8), 
+  GM_APPROVE_DATE       DATE, 
+  ORDER_NO              NUMBER (10), 
+  VAT                   NUMBER (5,2), 
+  OTH_AMT               NUMBER (14,4), 
+  AMNT_DESC             VARCHAR2 (70), 
+  REC_STATUS            NUMBER (2), 
+  CURR_USD_RATE         NUMBER (8,4), 
+  GM_APPROVE_ST         NUMBER (1), 
+  DIS_PER               NUMBER (8,4), 
+  DIS_AMNT              NUMBER (14,4), 
+  RES_ST                NUMBER (1), 
+  PO_CODE               NUMBER (3), 
+  CODE_NO               NUMBER (20), 
+  TERM_COST             NUMBER (14,4), 
+  PRINT_COU             NUMBER (10), 
+  TERM_NO               NUMBER (5), 
+  D_DAY                 NUMBER (5), 
+  D_AFTER               NUMBER (3), 
+  GM_NO                 NUMBER (8), 
+  GM_REMARK             VARCHAR2 (200), 
+  SCM_REMARK            VARCHAR2 (200), 
+  SEC_REMARK            VARCHAR2 (200), 
+  SCM_RE_DATE           DATE, 
+  SEC_RE_DATE           DATE, 
+  GM_RE_DATE            DATE, 
+  CHANGE_REMARK         VARCHAR2 (200), 
+  LAST_CHANGE_DATE      DATE, 
+  SUPPLY_OF             VARCHAR2 (100), 
+  COST_CENTER           NUMBER (10), 
+  EFFECTIVE_DATE        DATE, 
+  COUNTRY_REGION        VARCHAR2 (100), 
+  PAY_TYPE_NO           NUMBER (3), 
+  D_DAYS_FROM           NUMBER (3), 
+  DELIVARY_WEEKS_DAYS   VARCHAR2 (30), 
+  PO_CANCELLATION_DESC  VARCHAR2 (1000), 
+  CANCEL_DATE           DATE, 
+  VOUCHER_FLAG          NUMBER ) ; 
+
+
+DROP TABLE PROCESS_DETAILS CASCADE CONSTRAINTS ; 
+
+CREATE TABLE PROCESS_DETAILS ( 
+  BRAN_NO            NUMBER (2), 
+  PRO_TYPE_SER       NUMBER (10)   NOT NULL, 
+  PRO_TYPE_NO        NUMBER (2), 
+  PRO_DATE           DATE, 
+  GROUP_NO           NUMBER (10), 
+  ITEM_NO            NUMBER (38)   NOT NULL, 
+  QUANTITY           NUMBER (20,2), 
+  QUANTITY_SUPPLIED  NUMBER (20,2), 
+  UNIT_PRICE         NUMBER (14,4), 
+  DESCRIPTION        VARCHAR2 (500), 
+  PART_NO            VARCHAR2 (50), 
+  REC_STATUS_D       NUMBER, 
+  ITEM_STATUS        NUMBER, 
+  CANCEL_ITEM        NUMBER (2), 
+  PRIMARY KEY ( ITEM_NO, PRO_TYPE_SER ) ) ; 
