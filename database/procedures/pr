@@ -1,0 +1,9 @@
+CREATE OR REPLACE VIEW SUPPLIER_PO_AMT ( AMOUNT, 
+PONO, SUPPLIER, PRO_DATE, ORDER_NO, 
+CURR_RATE, CURR_NO ) AS select ((sum(nvl(unit_price,0)*nvl(quantity,0))+nvl(p.oth_amt,0)+round(nvl(sum(nvl(UNIT_PRICE,0)*nvl(quantity,0)),0)*nvl(vat,0)/100,2)+nvl(term_cost,0) ))  Amount  , p.pro_type_ser pono  , p.supp_no supplier    ,  p.PRO_DATE , p.order_no  , p.CURR_RATE , 
+ nvl(p.CURR_NO,0)
+ from  process p  , process_details pd  where
+ p.PRO_TYPE_SER = pd.PRO_TYPE_SER   
+  and p.STATUS in (6,8)
+   group by p.pro_type_ser   ,nvl(p.oth_amt,0),nvl(vat,0),nvl(term_cost,0) , p.supp_no , p.order_no ,  p.PRO_DATE ,p.CURR_RATE ,  p.CURR_NO
+
